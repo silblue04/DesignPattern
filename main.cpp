@@ -50,5 +50,12 @@ int InitTest::si = 0;
 
 void Upcasting()
 {
+    // Composite 패턴
+}
+
+
+
+void Coupling()
+{
     
 }
