@@ -183,3 +183,31 @@ int mainOfSection3 ()
     // 컴포넌트 처럼 아이템 획득하면 컴포넌트 추가해주고
     // 아니면 떼는 형태로 가고 나머지는 그대로 두면 더 좋을 듯!
 }
+
+
+// Section 4: 간접층의 원리 - Adapter
+
+// list를 stack 처럼 보이도록 변경
+template<typename T> class Stack //: public list<T>
+{
+private :
+    list<T> _list;
+    // 이것또한 리스트를 쓸 건지 벡터를 쓴건지 템플릿 받아서 처리 가능
+
+public :
+    void push(const T& a) { _list.pushback(a); }//{ list<T>::pushback(a); }
+    void pop() { _list.pop_back; }//{ list<T>::pop_back; }
+    T& top() { return _list.back() }// { return list<T>::back() }
+};
+
+int mainOfSection4()
+{
+    Stack<int> s;
+    s.push(10);
+    s.push(20);
+
+    s.push_front(20); // 이렇게 사용해 버리면 어떻게 처리?
+    // list<T> 를 상속받지말고 포함 이럼 이제 error!
+
+    std::cout << s.top() << std::endl;
+}
