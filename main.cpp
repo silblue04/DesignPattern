@@ -66,7 +66,7 @@ void Coupling()
 
 // Section 2: 공통성과 가변성의 분리
 
-// Section 3: 재귀적 포함
+// Section 3: 재귀적 포함 - Menu Event
 
 class BaseMenu
 {
@@ -129,3 +129,57 @@ public :
         // Dialog method
     }
 };
+
+
+
+// Section 3: 재귀적 포함 - Decorator
+
+class SpaceCraft
+{
+private :
+    int _id;
+    float _speed;
+    // ...
+public :
+    void Fire()
+    {
+        // shot!
+    }
+};
+
+class LeftMissile // 이걸 컴포넌트로
+{
+private :
+    SpaceCraft* _sc;
+public :
+    LeftMissile(SpaceCraft* sc)
+        : _sc(sc)
+    {
+
+    }
+
+    void Fire()
+    {
+        if(_sc)
+        {
+            _sc->Fire();
+        }
+
+        // left shot!
+    }
+};
+
+int mainOfSection3 ()
+{
+    SpaceCraft sc;
+    sc.Fire();
+
+    LeftMissile lm(&sc); // 아이템 획득
+    lm.Fire();
+
+    // 흠.. 그닥..
+    // 아이템 획득하면 Fire 함수 호출 객체를 수정해줘야해..?
+
+    // 컴포넌트 처럼 아이템 획득하면 컴포넌트 추가해주고
+    // 아니면 떼는 형태로 가고 나머지는 그대로 두면 더 좋을 듯!
+}
