@@ -268,40 +268,56 @@ int mainOfProxy()
 
 // Section 5: 통보, 열거, 방문 - Observer
 
-struct IGraph
+struct IGraph // Observer
 {
     virtual void Update(int) = 0;
     virtual ~IGraph() {}
 };
 
-// // 관찰의 대상을 서브젝트라고 부름
-// class Subject
-// {
-
-// };
-
-class Table
+// 관찰의 대상을 서브젝트라고 부름
+// Suvject -> Object에게 통보
+class Subject
 {
     vector<IGraph*> _graphList;
-    int data;
 public :
     void Attach(IGraph* graph)
     {
         _graphList.push_back(graph);
     }
-    void  Detach(IGraph* graph)
+    void Detach(IGraph* graph)
     {
         //
     }
-    void SetData(int d)
+    void Notify(int data)
     {
-        data = d;
         for (auto graph : _graphList)
         {
             graph->Update(data);
         }
     }
 };
+
+class Table : public Subject
+{
+    int data;
+
+    void SetData(int d)
+    {
+        data = d;
+        Notify(data);
+    }
+};
+
+// class Table3D : public Subject
+// {
+//     int data[3];
+
+//     void SetData(int d)
+//     {
+//         data = d;
+//         Notify(data);
+//     }
+// };
 
 class PieGraph : public IGraph
 {
