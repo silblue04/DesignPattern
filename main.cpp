@@ -270,7 +270,7 @@ int mainOfProxy()
 
 struct IGraph // Observer
 {
-    virtual void Update(int) = 0;
+    virtual void Update(Subject*) = 0;
     virtual ~IGraph() {}
 };
 
@@ -288,29 +288,37 @@ public :
     {
         //
     }
-    void Notify(int data)
+    void Notify()
     {
         for (auto graph : _graphList)
         {
-            graph->Update(data);
+            graph->Update(this);
         }
     }
 };
 
 class Table : public Subject
 {
-    int data;
-
+    int _data;
+    int _color;
+public :
+    int GetData() { return _data; }
+    int GetColor() { return _color; }
     void SetData(int d)
     {
-        data = d;
-        Notify(data);
+        _data = d;
+        Notify();
+    }
+    void SetColor(int c)
+    {
+        _color = c;
+        Notify();
     }
 };
 
 // class Table3D : public Subject
 // {
-//     int data[3];
+//     int data[3][4];
 
 //     void SetData(int d)
 //     {
@@ -322,8 +330,9 @@ class Table : public Subject
 class PieGraph : public IGraph
 {
 public :
-    virtual void Update(int n)
+    virtual void Update(Subject* subject)
     {
+        int n = static_cast<Table*>(subject)->GetData();
         Draw(n);
     }
     void Draw(int n)
