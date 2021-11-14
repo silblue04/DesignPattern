@@ -344,7 +344,7 @@ public :
     }
 };
 
-class BareGraph : public IGraph
+class BarGraph : public IGraph
 {
 public :
     virtual void Update(int n)
@@ -362,7 +362,7 @@ public :
 
 int mainOfObserver()
 {
-    BareGraph bg;
+    BarGraph bg;
     PieGraph pg;
 
     Table t;
@@ -371,4 +371,99 @@ int mainOfObserver()
 
     // 입력받고
     t.SetData(20);
+}
+
+
+
+// Section 5: 통보, 열거, 방문 - Container
+
+struct Node
+{
+    // int data;
+    // Node* next;
+    // Node( int d, Node* n) : data(d), next(n) {}
+    Object* data;
+    Node* next;
+    Node(Object* d, Node* n) : data(d), next(n) {}
+};
+// int뿐만 아니라 다양하게 담고 싶을 경우
+// -> 템플릿
+// 하지만 템플릿이 아닌 다른 기법을 사용할 수 있다
+// -> 기반 클래스 생성
+struct Object
+{
+    virtual ~Object() {}
+};
+// 모든 클래스는 Object에서 파생되어야 한다.
+class Dialog : public Object {};
+class Rect : public Object {};
+class Circle : public Object {};
+class Point : public Object {};
+
+class SingleList
+{
+    Node* head = nullptr;
+public :
+    void Push_back(Object* o) { head = new Node()}
+    Object* front() { return head->data; }
+};
+
+int mainOfContainer()
+{
+    SingleList list;
+    list.Push_back(new Point);
+    list.Push_back(new Point);
+
+    SingleList list2;
+    list2.Push_back(new Circle);
+    list2.Push_back(new Point);
+    // 템플릿을 사용했을 때와 비교하면
+
+    // 단점 1 : 
+    // 실수로 잘못 넣었는데 모를 수 있다.
+    // => 타입 안정성이 덜어진다.
+    // 단점 2 : data를 떠낼 때 캐스팅 필요
+    // 단점 3 : 프리미티브 타입들은 저장 할 수 x
+
+    // 장점 1 : 코드 메모리 증가는 없다
+}
+
+// 템플릿으로 했을 경우의 담점
+// 코드 메모리 증가
+// 이 부분을 해결해 보면 어떨까?
+// => data 처리를 void*로 가버렷!
+// 하지만 넣고뺄때 매번 캐스팅 해야함..
+
+class SingleListImp
+{
+    Node* head = nullptr;
+public :
+    void Push_back(Object* o) { head = new Node()}
+    Object* front() { return head->data; }
+};
+
+// thin template : 캐스팅을 위해 존재
+
+// to reduce object code duplication
+// when a class template is instanticated
+// for many types
+
+// 타입별로 생으로 코드가 생성되는 것보다
+// 코드 메모리 down
+template<typename T>
+class SingleList2 : public SingleListImp
+{
+public :
+    inline void Push_back(T o) { SingleListImp::Push_back((void*)n); }
+    inline T front() { return (T)SingleListImp::front(); }
+};
+
+// 이렇게하면 캐스팅 자동으로 가능
+int mainOfContainer2()
+{
+    SingleList2<int> list;
+    list.Push_back(10);
+    list.Push_back(20);
+
+    int n = list.front();
 }
