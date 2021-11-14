@@ -467,3 +467,25 @@ int mainOfContainer2()
 
     int n = list.front();
 }
+
+
+// Section 5: 통보, 열거, 방문 - Iterator
+
+// Section 5: 통보, 열거, 방문 - Visitor
+
+// #include <iostream>
+// #include <vector>
+// #include <numeric>
+
+// using namespace std;
+
+// int main()
+// {
+//     std::vector<int> v{ 1, 1, 1, 1, 1 };
+// 	int sum = std::accumulate(v.begin(), v.end(), 0);
+
+// 	string sumString = std::accumulate(v.begin(), v.end(), std::to_string(v[0]), [](std::string a, int b) mutable
+//     {
+//         return std::move(a) + '-' + std::to_string(b);
+//     });
+// }
