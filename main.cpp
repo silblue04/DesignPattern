@@ -473,6 +473,10 @@ int mainOfContainer2()
 
 // Section 5: 통보, 열거, 방문 - Visitor
 
+
+// std::accumulate
+//https://en.cppreference.com/w/cpp/algorithm/accumulate
+//http://www.soen.kr/lecture/ccpp/cpp4/42-4-1.htm
 // #include <iostream>
 // #include <vector>
 // #include <numeric>
@@ -489,3 +493,52 @@ int mainOfContainer2()
 //         return std::move(a) + '-' + std::to_string(b);
 //     });
 // }
+
+
+// Section 6: 객체를 생성하는 방법 - Singleton
+//
+// 싱글콘 뮤텍스 락 -> 이미 할당되어 있을 경우에도 락을 걸어야함
+// => Doluble Check Locking Pattern (DCLP)
+
+#include <mutex>
+#include <atomic>
+
+template<typename TYPE> class DCLPSingleton
+{
+private :
+    DCLPSingleton() {}
+    DCLPSingleton(const DCLPSingleton&) = delete;
+    void operator=(const DCLPSingleton&) = delete;
+
+    static TYPE*    _instance;
+    static mutex     _m;
+
+public :
+    static TYPE* GetInstance()
+    {
+        if(_instance == nullptr)
+        {
+            _m.lock();
+            if(_instance == nullptr)
+            {
+                _instance = new TYPE();
+                // 1. temp = sizeof(DCLPSingleton) 메모리 할당
+                // 2. DCLPSingleton::DCLPSingleton() 생성자 호출
+                // 3. _instance = temp
+
+                // 하지만 일부 컴파일러에서는 최적화를 위해
+                // 아래처럼 시행
+
+                // 1. _instance = sizeof(DCLPSingleton) 메모리 할당  <--- 두 번째 스레드에서 (_instance == nullptr) 이 아니라고 판단하고 바로 싱글톤 리턴할 수 있다
+                // 2. DCLPSingleton::DCLPSingleton() 생성자 호출
+
+                // 리오더링 하지 않게 명령어 가능 => atomic
+            }
+            _m.unlock();
+        }
+        return _instance;
+    }
+};
+template<typename TYPE> TYPE* DCLPSingleton<TYPE>::_instance = nullptr;
+
+// Section 6: 객체를 생성하는 방법 - Factory
